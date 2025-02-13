@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+
+const String OSM_TILE_TEMPLATE =
+    "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const String PACKAGE_NAME = "org.dydx.busneighbor";
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'BusNeighbor Skeleton',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -31,7 +37,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'BusNeighbor Demo Home Page'),
     );
   }
 }
@@ -112,6 +118,19 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            SizedBox(
+              height: 600,
+              width: 600,
+              child: FlutterMap(
+                  options: MapOptions(
+                      initialZoom: 14,
+                      initialCenter: LatLng(39.9522, -75.1637)),
+                  children: [
+                    TileLayer(
+                        urlTemplate: OSM_TILE_TEMPLATE,
+                        userAgentPackageName: PACKAGE_NAME)
+                  ]),
+            )
           ],
         ),
       ),
