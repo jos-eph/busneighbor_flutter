@@ -3,11 +3,20 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 Widget mapIcon(String text) {
-  return Column(
+  return Stack(
+    alignment: Alignment.bottomLeft, // Center the text and image
     children: [
-      Text(text),
-      ImageIcon(AssetImage('assets/Smiley.png'), size: 36),
+      Image.asset("assets/Smiley.png", height: 19, width: 19),
+      Positioned(
+        // Position the text (adjust as needed)
+        bottom: 15, // Or bottom, or other positioning
+        child: Text(
+          text,
+          style: TextStyle(fontWeight: FontWeight.w900),
+        ),
+      ),
     ],
+    clipBehavior: Clip.none,
   );
 }
 

@@ -66,8 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   List<Marker> _markers = [
-    labeledPushpin("Yo", LatLng(39.9522, -75.1637)),
-    labeledPushpin("Philly", LatLng(39.9, -75.3))
+    labeledPushpin("45", LatLng(39.9522, -75.1637)),
+    labeledPushpin("47", LatLng(39.9, -75.3))
   ];
 
   void initState() {
