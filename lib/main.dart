@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:busneighbor_flutter/markers.dart';
 
 const String OSM_TILE_TEMPLATE =
     "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -63,15 +65,46 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  List<Marker> _markers = [
+    labeledPushpin("Yo", LatLng(39.9522, -75.1637)),
+    labeledPushpin("Philly", LatLng(39.9, -75.3))
+  ];
+
+  void initState() {
+    super.initState();
+    _selfInit();
+  }
+
+  Future<void> _selfInit() async {
+    print("Initializing home page...");
+
+    setState(() {
+      // any work we did should be applied here;
+    });
+  }
+
+  Future<void> _updateMarkers() async {
+    final String data = "Data"; // replace with references to JSON
+    print("Updating markers...");
+    // build markers
+
+    setState(() => _markers = _markers);
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
+      // _counter without callin setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  void incrementAndUpdate() {
+    _incrementCounter();
+    _updateMarkers();
   }
 
   @override
@@ -119,8 +152,8 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             SizedBox(
-              height: 600,
-              width: 600,
+              height: 500,
+              width: 500,
               child: FlutterMap(
                   options: MapOptions(
                       initialZoom: 14,
@@ -128,15 +161,27 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     TileLayer(
                         urlTemplate: OSM_TILE_TEMPLATE,
-                        userAgentPackageName: PACKAGE_NAME)
+                        userAgentPackageName: PACKAGE_NAME),
+                    MarkerLayer(
+                      markers: _markers,
+                    ),
+                    RichAttributionWidget(
+                      attributions: [
+                        TextSourceAttribution(
+                          'OpenStreetMap contributors',
+                          onTap: () => launchUrl(Uri.parse(
+                              'https://openstreetmap.org/copyright')), // (external)
+                        ),
+                      ],
+                    ),
                   ]),
             )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: incrementAndUpdate,
+        tooltip: 'Increment/update',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
