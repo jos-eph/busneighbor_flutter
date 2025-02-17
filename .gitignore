@@ -12,7 +12,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
-
+graphics_source/pngicons/*
 # IntelliJ related
 *.iml
 *.ipr
