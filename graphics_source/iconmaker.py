@@ -38,7 +38,7 @@ From Flutter documentation:
 ### Set up constants
 
 CACHED_SCALED_SIZES = [1.25, 1.5, 2.0, 3.0, 4.0]
-BASE_EDGE_SIZE_AT_1X = 20
+BASE_EDGE_SIZE_AT_1X = 22
 
 EDGE_SIZE_SUBDIR_NAME = {int(BASE_EDGE_SIZE_AT_1X * scaled_size) : f"{scaled_size}x" for scaled_size in CACHED_SCALED_SIZES}
 
@@ -58,7 +58,7 @@ for dir in EDGE_SIZE_SUBDIR_PATH.values():
         print(f"Dir {dir} already exists; expected condition for re-runs", file=sys.stderr)
 
 def getArgs(svg_path: str, square_edge: int, subdir_path = ICONDIR) -> list[str]:
-    args = ["/usr/bin/env", "convert", "-background", "none", "+antialias", "-resize"]
+    args = ["/usr/bin/env", "convert", "-background", "none", "-transparent", "white", "+antialias", "-resize"]
     base_name = os.path.basename(svg_path).removesuffix(".svg")
     args.append(f"{square_edge}x{square_edge}")
 
