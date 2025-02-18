@@ -6,7 +6,7 @@ Widget mapIcon(String text) {
   return Stack(
     alignment: Alignment.bottomLeft, // Center the text and image
     children: [
-      Image.asset("assets/Smiley.png", height: 19, width: 19),
+      Image.asset("assets/CompassN.png", height: 19, width: 19),
       Positioned(
         // Position the text (adjust as needed)
         bottom: 15, // Or bottom, or other positioning
