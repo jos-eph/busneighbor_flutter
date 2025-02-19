@@ -70,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
     labeledPushpin("47", LatLng(39.9, -75.3))
   ];
 
+  @override
   void initState() {
     super.initState();
     _selfInit();
