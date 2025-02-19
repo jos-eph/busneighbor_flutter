@@ -3,6 +3,7 @@
 *.log
 *.pyc
 *.swp
+*.lock
 .DS_Store
 .atom/
 .build/
@@ -11,7 +12,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
-
+graphics_source/pngicons/*
 # IntelliJ related
 *.iml
 *.ipr
