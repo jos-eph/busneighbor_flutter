@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:busneighbor_flutter/markers.dart';
+import 'package:busneighbor_flutter/service/gtfs-service.dart';
 
 const String OSM_TILE_TEMPLATE =
     "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -78,7 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _selfInit() async {
     print("Initializing home page...");
-
     setState(() {
       // any work we did should be applied here;
     });
@@ -87,7 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _updateMarkers() async {
     final String data = "Data"; // replace with references to JSON
     print("Updating markers...");
-    // build markers
+    var service = GtfsService();
+    service.printLocationsTest();
 
     setState(() => _markers = _markers);
   }
