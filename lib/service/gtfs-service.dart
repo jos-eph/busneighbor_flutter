@@ -36,6 +36,16 @@ class GtfsService {
 
   Future<void> printLocationsTest() async {
     List<VehiclePosition> positions = await getPositions();
-    positions.forEach((positionObject) => print(positionObject.toString()));
+    for (VehiclePosition position in positions) {
+      double lat = position.position.latitude;
+      double lng = position.position.longitude;
+      int direction = position.trip.directionId;
+      String route = position.trip.routeId;
+      String vehicleId = position.vehicle.id;
+
+      print("$lat\t$lng\t$direction\t$route\t$vehicleId");
+    }
   }
+
+
 }

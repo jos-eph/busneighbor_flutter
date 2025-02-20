@@ -1,9 +1,9 @@
 # Miscellaneous
 *.class
 *.log
+*.lock
 *.pyc
 *.swp
-*.lock
 .DS_Store
 .atom/
 .build/
