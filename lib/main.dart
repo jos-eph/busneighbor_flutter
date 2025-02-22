@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final String data = "Data"; // replace with references to JSON
     print("Updating markers...");
     var service = GtfsService();
-    service.printLocationsTest();
+    service.provideLocationsMap();
 
     setState(() => _markers = _markers);
   }

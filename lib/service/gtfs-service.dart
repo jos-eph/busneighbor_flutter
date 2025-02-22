@@ -64,8 +64,10 @@ class GtfsService {
     return GtfsLocations(locationsMap, vehicleIdToSource);
   }
 
-  Future<GtfsLocations> printLocationsTest() async {
+  Future<GtfsLocations> provideLocationsMap() async {
     List<VehiclePosition> positions = await retrieveVehiclePositions();
-    return vehiclePositionsToGtfsLocations(positions);
+    var gtfsLocations = vehiclePositionsToGtfsLocations(positions);
+    print(gtfsLocations.locationsMap);
+    return gtfsLocations;
   }
 }
