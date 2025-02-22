@@ -1,9 +1,9 @@
 # Miscellaneous
 *.class
 *.log
+*.lock
 *.pyc
 *.swp
-*.lock
 .DS_Store
 .atom/
 .build/
@@ -13,6 +13,9 @@
 .swiftpm/
 migrate_working_dir/
 graphics_source/pngicons/*
+api_exploration/DirectionNameId/*.json
+coverage/*
+
 # IntelliJ related
 *.iml
 *.ipr
