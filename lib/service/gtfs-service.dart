@@ -1,10 +1,18 @@
+import 'package:busneighbor_flutter/service/direction-map.dart';
 import 'package:http/http.dart';
 import 'package:busneighbor_flutter/model/gtfs-realtime/gtfs-realtime.pb.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:busneighbor_flutter/model/gtfsLocations.dart';
+import 'package:busneighbor_flutter/service/gtfs-service.dart';
 
 final Uri SEPTA_LOCATIONS_GTFS = Uri.parse(
     "https://www3.septa.org/gtfsrt/septa-pa-us/Vehicle/rtVehiclePosition.pb");
+
+const NORTHBOUND = "Northbound";
+const SOUTHBOUND = "Southbound";
+const EASTBOUND = "Eastbound";
+const WESTBOUND = "Westbound";
+const LOOP = "Loop";
 
 class GtfsService {
   List<VehiclePosition> getVehiclePositions(List<int> rawBinaryBuffer) {
@@ -69,5 +77,9 @@ class GtfsService {
     var gtfsLocations = vehiclePositionsToGtfsLocations(positions);
     print(gtfsLocations.locationsMap);
     return gtfsLocations;
+  }
+
+  String? provideDirection(String route, int direction) {
+    return routeDirectionIdDirection?[route]?[direction];
   }
 }

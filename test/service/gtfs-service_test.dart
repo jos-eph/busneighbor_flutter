@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:busneighbor_flutter/model/gtfsLocations.dart';
+import 'package:busneighbor_flutter/service/direction-map.dart';
 import 'package:test/test.dart';
 import 'dart:io';
 import 'package:busneighbor_flutter/service/gtfs-service.dart';
@@ -279,7 +280,6 @@ void main() {
     expect(lastPosition.position.bearing == 344.57000732421875, true);
     expect(lastPosition.position.latitude == 40.016090393066406, true);
     expect(lastPosition.trip.routeId == "XH", true);
-    print(lastPosition.position.latitude);
   });
 
   test('A known protobuf is processed to a correct hierarchy', () {
@@ -293,5 +293,19 @@ void main() {
             40.016090393066406,
         true);
     expect(processed.vehicleIdToSource.keys.toList(), expectedVehicles);
+  });
+
+  test('Test direction decoder', () {
+    expect(gtfs.provideDirection("45", 0), SOUTHBOUND);
+    expect(gtfs.provideDirection("45", 1), NORTHBOUND);
+    expect(gtfs.provideDirection("45", 2), null);
+    expect(gtfs.provideDirection("55", 0), NORTHBOUND);
+    expect(gtfs.provideDirection("55", 1), SOUTHBOUND);
+    expect(gtfs.provideDirection("55", 2), null);
+    expect(gtfs.provideDirection("64", 0), WESTBOUND);
+    expect(gtfs.provideDirection("64", 1), EASTBOUND);
+    expect(gtfs.provideDirection("64", 100), null);
+    expect(gtfs.provideDirection("35", 0), LOOP);
+    expect(gtfs.provideDirection("Werewolf", 0), null);
   });
 }
