@@ -13,11 +13,11 @@ Image _iconImageFromPath(String path) {
       height: LOGICAL_EDGE_HEIGHT, width: LOGICAL_EDGE_HEIGHT);
 }
 
-Image _NORTH_ICON = _iconImageFromPath("assets/CompassN.png");
-Image _SOUTH_ICON = _iconImageFromPath("assets/CompassS.png");
-Image _EAST_ICON = _iconImageFromPath("assets/CompassE.png");
-Image _WEST_ICON = _iconImageFromPath("assets/CompassW.png");
-Image _SMILEY = _iconImageFromPath("assets/Smiley.png");
+Image NORTH_ICON = _iconImageFromPath("assets/CompassN.png");
+Image SOUTH_ICON = _iconImageFromPath("assets/CompassS.png");
+Image EAST_ICON = _iconImageFromPath("assets/CompassE.png");
+Image WEST_ICON = _iconImageFromPath("assets/CompassW.png");
+Image SMILEY = _iconImageFromPath("assets/Smiley.png");
 Icon BUS_ZERO =
     Icon(Icons.directions_bus, color: Colors.blue, size: LOGICAL_EDGE_HEIGHT);
 Icon BUS_ONE =
@@ -57,13 +57,13 @@ Widget getRouteDirectionIcon(String route, int direction) {
 
   switch (directionString) {
     case NORTHBOUND:
-      return _NORTH_ICON;
+      return NORTH_ICON;
     case SOUTHBOUND:
-      return _SOUTH_ICON;
+      return SOUTH_ICON;
     case EASTBOUND:
-      return _EAST_ICON;
+      return EAST_ICON;
     case WESTBOUND:
-      return _WEST_ICON;
+      return WEST_ICON;
     case LOOP:
       return LOOP_ICON;
     default:
