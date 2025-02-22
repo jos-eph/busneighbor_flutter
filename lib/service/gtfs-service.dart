@@ -7,7 +7,7 @@ final Uri SEPTA_LOCATIONS_GTFS = Uri.parse(
     "https://www3.septa.org/gtfsrt/septa-pa-us/Vehicle/rtVehiclePosition.pb");
 
 class GtfsService {
-  List<VehiclePosition> getVehicles(List<int> rawBinaryBuffer) {
+  List<VehiclePosition> getVehiclePositions(List<int> rawBinaryBuffer) {
     final feedMessage = FeedMessage.fromBuffer(rawBinaryBuffer);
     return feedMessage.entity
         .where((feedEntity) => feedEntity.hasVehicle())
@@ -15,9 +15,9 @@ class GtfsService {
         .toList();
   }
 
-  Future<List<VehiclePosition>> getPositions() async {
+  Future<List<VehiclePosition>> retrieveVehiclePositions() async {
     List<int> positionsProtoBuf = await getLocationProtoBuf();
-    return getVehicles(positionsProtoBuf);
+    return getVehiclePositions(positionsProtoBuf);
   }
 
   Future<List<int>> getLocationProtoBuf() async {
@@ -43,10 +43,10 @@ class GtfsService {
     return Map<String, LatLng>();
   }
 
-  Future<GtfsLocations> printLocationsTest() async {
-    List<VehiclePosition> positions = await getPositions();
-    Map<String, VehiclePosition> vehicleIdToSource = Map();
-    Map<String, Map<int, Map<String, LatLng>>> locationsMap = Map();
+  GtfsLocations vehiclePositionsToGtfsLocations(
+      List<VehiclePosition> positions) {
+    var locationsMap = Map<String, Map<int, Map<String, LatLng>>>();
+    var vehicleIdToSource = Map<String, VehiclePosition>();
 
     for (VehiclePosition vehiclePosition in positions) {
       double lat = vehiclePosition.position.latitude;
@@ -59,11 +59,13 @@ class GtfsService {
 
       locationsMap.putIfAbsent(route, createDirectionIdLevel).putIfAbsent(
           direction, createVehicleLocationLevel)[vehicleId] = LatLng(lat, lng);
-
-      print("$lat\t$lng\t$direction\t$route\t$vehicleId");
     }
-    print("$locationsMap");
 
     return GtfsLocations(locationsMap, vehicleIdToSource);
+  }
+
+  Future<GtfsLocations> printLocationsTest() async {
+    List<VehiclePosition> positions = await retrieveVehiclePositions();
+    return vehiclePositionsToGtfsLocations(positions);
   }
 }
