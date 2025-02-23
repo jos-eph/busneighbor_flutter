@@ -15,6 +15,9 @@ migrate_working_dir/
 graphics_source/pngicons/*
 api_exploration/DirectionNameId/*.json
 coverage/*
+*.csv
+*.xlsx
+*.txt
 
 # IntelliJ related
 *.iml
