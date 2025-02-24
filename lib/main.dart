@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:busneighbor_flutter/markers.dart';
+import 'package:busneighbor_flutter/service/map-marker-service.dart';
 import 'package:busneighbor_flutter/service/gtfs-service.dart';
 
 const String OSM_TILE_TEMPLATE =
@@ -67,8 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   List<Marker> _markers = [
-    labeledPushpin("45", 0, LatLng(39.9522, -75.1637)),
-    labeledPushpin("47", 1, LatLng(39.9, -75.3))
+    MapMarkerService.labeledPushpin("45", 0, LatLng(39.9522, -75.1637)),
+    MapMarkerService.labeledPushpin("47", 1, LatLng(39.9, -75.3))
   ];
 
   @override
@@ -87,8 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _updateMarkers() async {
     final String data = "Data"; // replace with references to JSON
     print("Updating markers...");
-    var service = GtfsService();
-    service.provideLocationsMap();
+    GtfsService.provideLocationsMap();
 
     setState(() => _markers = _markers);
   }

@@ -1,4 +1,4 @@
-import 'package:busneighbor_flutter/service/direction-map.dart';
+import 'package:busneighbor_flutter/service/constants/direction-map.dart';
 import 'package:http/http.dart';
 import 'package:busneighbor_flutter/model/gtfs-realtime/gtfs-realtime.pb.dart';
 import 'package:latlong2/latlong.dart';
@@ -15,7 +15,7 @@ const WESTBOUND = "Westbound";
 const LOOP = "Loop";
 
 class GtfsService {
-  List<VehiclePosition> getVehiclePositions(List<int> rawBinaryBuffer) {
+  static List<VehiclePosition> getVehiclePositions(List<int> rawBinaryBuffer) {
     final feedMessage = FeedMessage.fromBuffer(rawBinaryBuffer);
     return feedMessage.entity
         .where((feedEntity) => feedEntity.hasVehicle())
@@ -23,12 +23,12 @@ class GtfsService {
         .toList();
   }
 
-  Future<List<VehiclePosition>> retrieveVehiclePositions() async {
+  static Future<List<VehiclePosition>> retrieveVehiclePositions() async {
     List<int> positionsProtoBuf = await getLocationProtoBuf();
     return getVehiclePositions(positionsProtoBuf);
   }
 
-  Future<List<int>> getLocationProtoBuf() async {
+  static Future<List<int>> getLocationProtoBuf() async {
     Response response;
     try {
       response = await get(SEPTA_LOCATIONS_GTFS);
@@ -43,15 +43,15 @@ class GtfsService {
     return response.bodyBytes;
   }
 
-  Map<int, Map<String, LatLng>> createDirectionIdLevel() {
+  static Map<int, Map<String, LatLng>> createDirectionIdLevel() {
     return Map<int, Map<String, LatLng>>();
   }
 
-  Map<String, LatLng> createVehicleLocationLevel() {
+  static Map<String, LatLng> createVehicleLocationLevel() {
     return Map<String, LatLng>();
   }
 
-  GtfsLocations vehiclePositionsToGtfsLocations(
+  static GtfsLocations vehiclePositionsToGtfsLocations(
       List<VehiclePosition> positions) {
     var locationsMap = Map<String, Map<int, Map<String, LatLng>>>();
     var vehicleIdToSource = Map<String, VehiclePosition>();
@@ -72,14 +72,14 @@ class GtfsService {
     return GtfsLocations(locationsMap, vehicleIdToSource);
   }
 
-  Future<GtfsLocations> provideLocationsMap() async {
+  static Future<GtfsLocations> provideLocationsMap() async {
     List<VehiclePosition> positions = await retrieveVehiclePositions();
     var gtfsLocations = vehiclePositionsToGtfsLocations(positions);
     print(gtfsLocations.locationsMap);
     return gtfsLocations;
   }
 
-  String? provideDirection(String route, int direction) {
+  static String? provideDirection(String route, int direction) {
     return routeDirectionIdDirection?[route]?[direction];
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:busneighbor_flutter/model/gtfsLocations.dart';
-import 'package:busneighbor_flutter/service/direction-map.dart';
+import 'package:busneighbor_flutter/service/constants/direction-map.dart';
 import 'package:test/test.dart';
 import 'dart:io';
 import 'package:busneighbor_flutter/service/gtfs-service.dart';
@@ -272,7 +272,7 @@ void main() {
   ];
 
   test('A known protobuf is converted to the correct vehicle positions', () {
-    var vehiclePositions = gtfs.getVehiclePositions(buffer);
+    var vehiclePositions = GtfsService.getVehiclePositions(buffer);
     var lastPosition = vehiclePositions[258];
 
     expect(vehiclePositions.length == 259, true);
@@ -283,8 +283,9 @@ void main() {
   });
 
   test('A known protobuf is processed to a correct hierarchy', () {
-    var positions = gtfs.getVehiclePositions(buffer);
-    GtfsLocations processed = gtfs.vehiclePositionsToGtfsLocations(positions);
+    var positions = GtfsService.getVehiclePositions(buffer);
+    GtfsLocations processed =
+        GtfsService.vehiclePositionsToGtfsLocations(positions);
     expect(processed.locationsMap.length == 99, true); // 99 routes in sample
     expect(
         processed.locationsMap["4"]?.keys.length == 2, true); // two directions
@@ -296,16 +297,16 @@ void main() {
   });
 
   test('Test direction decoder', () {
-    expect(gtfs.provideDirection("45", 0), SOUTHBOUND);
-    expect(gtfs.provideDirection("45", 1), NORTHBOUND);
-    expect(gtfs.provideDirection("45", 2), null);
-    expect(gtfs.provideDirection("55", 0), NORTHBOUND);
-    expect(gtfs.provideDirection("55", 1), SOUTHBOUND);
-    expect(gtfs.provideDirection("55", 2), null);
-    expect(gtfs.provideDirection("64", 0), WESTBOUND);
-    expect(gtfs.provideDirection("64", 1), EASTBOUND);
-    expect(gtfs.provideDirection("64", 100), null);
-    expect(gtfs.provideDirection("35", 0), LOOP);
-    expect(gtfs.provideDirection("Werewolf", 0), null);
+    expect(GtfsService.provideDirection("45", 0), SOUTHBOUND);
+    expect(GtfsService.provideDirection("45", 1), NORTHBOUND);
+    expect(GtfsService.provideDirection("45", 2), null);
+    expect(GtfsService.provideDirection("55", 0), NORTHBOUND);
+    expect(GtfsService.provideDirection("55", 1), SOUTHBOUND);
+    expect(GtfsService.provideDirection("55", 2), null);
+    expect(GtfsService.provideDirection("64", 0), WESTBOUND);
+    expect(GtfsService.provideDirection("64", 1), EASTBOUND);
+    expect(GtfsService.provideDirection("64", 100), null);
+    expect(GtfsService.provideDirection("35", 0), LOOP);
+    expect(GtfsService.provideDirection("Werewolf", 0), null);
   });
 }
