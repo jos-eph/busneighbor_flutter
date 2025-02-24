@@ -10,7 +10,6 @@ import 'package:collection/collection.dart';
 void main() {
   final File readData = File("test/stubs/rtVehiclePosition.pb");
   final buffer = readData.readAsBytesSync();
-  var gtfs = GtfsService();
 
   final expectedVehicles = [
     '9109',
