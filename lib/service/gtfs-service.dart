@@ -75,7 +75,6 @@ class GtfsService {
   static Future<GtfsLocations> provideLocationsMap() async {
     List<VehiclePosition> positions = await retrieveVehiclePositions();
     var gtfsLocations = vehiclePositionsToGtfsLocations(positions);
-    print(gtfsLocations.locationsMap);
     return gtfsLocations;
   }
 

@@ -1,9 +1,11 @@
+import 'package:busneighbor_flutter/service/map-updater-service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:busneighbor_flutter/service/map-marker-service.dart';
 import 'package:busneighbor_flutter/service/gtfs-service.dart';
+import 'package:busneighbor_flutter/service/map-updater-service.dart';
 
 const String OSM_TILE_TEMPLATE =
     "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -12,6 +14,8 @@ const String PACKAGE_NAME = "org.dydx.busneighbor";
 void main() {
   runApp(const MyApp());
 }
+
+MapUpdaterService mapUpdaterService = MapUpdaterService();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -87,9 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _updateMarkers() async {
     final String data = "Data"; // replace with references to JSON
     print("Updating markers...");
-    GtfsService.provideLocationsMap();
 
-    setState(() => _markers = _markers);
+    List<Marker> newMarkers =
+        await mapUpdaterService.getMapsForRoutes({"45", "47", "4", "29"});
+    print(newMarkers);
+    setState(() => _markers = newMarkers);
+    print(_markers);
   }
 
   void _incrementCounter() {
