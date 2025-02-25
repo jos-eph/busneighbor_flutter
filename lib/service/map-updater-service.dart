@@ -7,7 +7,7 @@ class MapUpdaterService {
   static List<Marker> getMapsForRoutesSync(
       Set<String> routeIds, GtfsLocations locations) {
     List<Marker> collectedMarkers = <Marker>[];
-    for (final chosenRoute in routeIds) {
+    for (String chosenRoute in routeIds) {
       final routeDirections = locations.locationsMap[chosenRoute] ?? Map();
       for (int directionId in routeDirections.keys) {
         final vehicleLocations = routeDirections[directionId] ?? Map();
