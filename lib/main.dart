@@ -94,9 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     List<Marker> newMarkers =
         await mapUpdaterService.getMapsForRoutes({"45", "47", "4", "29"});
-    print(newMarkers);
     setState(() => _markers = newMarkers);
-    print(_markers);
   }
 
   void _incrementCounter() {
