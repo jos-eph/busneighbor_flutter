@@ -13,7 +13,9 @@ class UserLocationService {
   // location services are automatically requested to be on when we request permission
 
   static Future<bool> ensureLocationPermission() async {
+    print("In permission check method");
     LocationPermission permission = await Geolocator.checkPermission();
+    print("past permission check. $permission");
     if (permission == LocationPermission.deniedForever) {
       return false;
     }
@@ -50,11 +52,20 @@ class UserLocationService {
     return LatLng(position.latitude, position.longitude);
   }
 
-  StreamSubscription<Position> registerForPositions(
-      LocationSettings locationSettings, Function(Position) onData,
-      {Function? onError, Function()? onDone, bool? cancelOnError}) {
-    return Geolocator.getPositionStream(locationSettings: locationSettings)
+  static LocationSettings _getLocationSettings() {
+    return LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 0);
+  }
+
+  static StreamSubscription<Position> registerForPositions(
+      Function(Position) onData,
+      {Function? onError,
+      Function()? onDone,
+      bool? cancelOnError}) {
+    return Geolocator.getPositionStream(
+            locationSettings: _getLocationSettings())
         .listen(onData,
             onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
+
+  void helloWorld() {}
 }

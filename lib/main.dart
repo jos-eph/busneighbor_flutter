@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -6,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:busneighbor_flutter/service/map-marker-service.dart';
 import 'package:busneighbor_flutter/service/gtfs-service.dart';
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
+import 'package:busneighbor_flutter/service/user-location-service.dart';
 
 const String OSM_TILE_TEMPLATE =
     "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -44,7 +47,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'BusNeighbor Demo Home Page'),
+      home: const MyHomePage(title: 'BusNeighbor Demo App'),
     );
   }
 }
@@ -69,6 +72,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  StreamSubscription? userLocationSubscription;
 
   List<Marker> _markers = [
     MapMarkerService.labeledPushpin("45", 0, LatLng(39.9522, -75.1637)),
@@ -83,8 +87,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _selfInit() async {
     print("Initializing home page...");
+    bool locationsOn = await UserLocationService.ensureLocationPermission();
+    print("Locations on: $locationsOn");
+    var subscription = UserLocationService.registerForPositions(
+        (position) => print("FUNKY $position"),
+        onError: (error) => print("CRAP $error"));
     setState(() {
-      // any work we did should be applied here;
+      userLocationSubscription = subscription;
     });
   }
 
