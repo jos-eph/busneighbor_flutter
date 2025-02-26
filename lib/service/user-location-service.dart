@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -46,5 +48,13 @@ class UserLocationService {
     }
 
     return LatLng(position.latitude, position.longitude);
+  }
+
+  StreamSubscription<Position> registerForPositions(
+      LocationSettings locationSettings, Function(Position) onData,
+      {Function? onError, Function()? onDone, bool? cancelOnError}) {
+    return Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen(onData,
+            onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 }
