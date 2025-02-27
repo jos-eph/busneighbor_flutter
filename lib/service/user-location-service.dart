@@ -7,15 +7,18 @@ class UserLocationService {
   static LatLng CITY_HALL = LatLng(39.9528, -75.1635);
 
   static Future<bool> locationServicesEnabled() async {
-    return await Geolocator.isLocationServiceEnabled();
+    return await Geolocator
+        .isLocationServiceEnabled(); // device-wide, not app permissions
+  }
+
+  static Future<bool> canUseLocation() async {
+    return await locationServicesEnabled() && await ensureLocationPermission();
   }
 
   // location services are automatically requested to be on when we request permission
 
   static Future<bool> ensureLocationPermission() async {
-    print("In permission check method");
     LocationPermission permission = await Geolocator.checkPermission();
-    print("past permission check. $permission");
     if (permission == LocationPermission.deniedForever) {
       return false;
     }
@@ -28,7 +31,7 @@ class UserLocationService {
       }
     }
 
-    print("Permission granted");
+    print("Geolocation permission granted");
 
     return true;
   }
@@ -69,5 +72,7 @@ class UserLocationService {
             onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
-  void helloWorld() {}
+  static LatLng positionToLatlng(Position position) {
+    return LatLng(position.latitude, position.longitude);
+  }
 }

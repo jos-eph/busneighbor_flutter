@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:busneighbor_flutter/service/map-component-service.dart';
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,10 +10,7 @@ import 'package:busneighbor_flutter/service/map-marker-service.dart';
 import 'package:busneighbor_flutter/service/gtfs-service.dart';
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
 import 'package:busneighbor_flutter/service/user-location-service.dart';
-
-const String OSM_TILE_TEMPLATE =
-    "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-const String PACKAGE_NAME = "org.dydx.busneighbor";
+import 'package:geolocator/geolocator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,55 +27,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'BusNeighbor Skeleton',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'BusNeighbor Demo App'),
+      home: const AppHome(title: 'BusNeighbor Demo App'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+class AppHome extends StatefulWidget {
+  const AppHome({super.key, required this.title});
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<AppHome> createState() => _AppHomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _AppHomeState extends State<AppHome> {
   int _counter = 0;
+  LatLng userPosition = UserLocationService.CITY_HALL;
+
   StreamSubscription? userLocationSubscription;
 
-  List<Marker> _markers = [
-    MapMarkerService.labeledPushpin("45", 0, LatLng(39.9522, -75.1637)),
-    MapMarkerService.labeledPushpin("47", 1, LatLng(39.9, -75.3))
-  ];
+  List<Marker> _markers = [];
 
   @override
   void initState() {
@@ -86,19 +58,33 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _selfInit() async {
-    print("Initializing home page...");
     bool locationsOn = await UserLocationService.ensureLocationPermission();
-    print("Locations on: $locationsOn");
+    if (!locationsOn) {
+      print("Locations off.");
+      return;
+    }
+    print("Locations on!");
     var subscription = UserLocationService.registerForPositions(
-        (position) => print("FUNKY $position"),
-        onError: (error) => print("CRAP $error"));
+        updateUserPosition,
+        onError: handleLocationError);
     setState(() {
       userLocationSubscription = subscription;
     });
   }
 
+  void updateUserPosition(Position position) {
+    LatLng convertedToPosition = UserLocationService.positionToLatlng(position);
+    print("Obtained updated position $convertedToPosition");
+    setState(() {
+      userPosition = convertedToPosition;
+    });
+  }
+
+  void handleLocationError(Object error, StackTrace stacktrace) {
+    print("Error obtaining user location: $error. Stacktrace: $stacktrace");
+  }
+
   Future<void> _updateMarkers() async {
-    final String data = "Data"; // replace with references to JSON
     print("Updating markers...");
 
     List<Marker> newMarkers =
@@ -166,31 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            SizedBox(
-              height: 500,
-              width: 500,
-              child: FlutterMap(
-                  options: MapOptions(
-                      initialZoom: 14,
-                      initialCenter: LatLng(39.9522, -75.1637)),
-                  children: [
-                    TileLayer(
-                        urlTemplate: OSM_TILE_TEMPLATE,
-                        userAgentPackageName: PACKAGE_NAME),
-                    MarkerLayer(
-                      markers: _markers,
-                    ),
-                    RichAttributionWidget(
-                      attributions: [
-                        TextSourceAttribution(
-                          'OpenStreetMap contributors',
-                          onTap: () => launchUrl(Uri.parse(
-                              'https://openstreetmap.org/copyright')), // (external)
-                        ),
-                      ],
-                    ),
-                  ]),
-            )
+            MapComponentService.getMapBox(_markers)
           ],
         ),
       ),
