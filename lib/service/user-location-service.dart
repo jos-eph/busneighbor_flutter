@@ -28,6 +28,8 @@ class UserLocationService {
       }
     }
 
+    print("Permission granted");
+
     return true;
   }
 
