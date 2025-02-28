@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:latlong2/latlong.dart';
 import 'package:busneighbor_flutter/service/map-marker-service.dart';
 
 class MapConstants {
@@ -23,4 +23,11 @@ class MapConstants {
       color: Colors.black, size: LOGICAL_EDGE_HEIGHT);
   static final Icon LOOP_ICON =
       Icon(Icons.loop, color: Colors.green[800], size: LOGICAL_EDGE_HEIGHT);
+  static final Icon GENERIC_CITY = Icon(
+    Icons.location_city,
+    size: LOGICAL_EDGE_HEIGHT + 7,
+    color: Colors.grey[700],
+  );
+
+  static LatLng CITY_HALL = LatLng(39.9528, -75.1635);
 }
