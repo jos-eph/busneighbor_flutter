@@ -32,6 +32,14 @@ class MapMarkerService {
     return Marker(point: pointLoc, child: mapIcon(route, direction));
   }
 
+  static Marker getNoUserLocationIcon(LatLng pointLoc) {
+    return Marker(point: pointLoc, child: MapConstants.GENERIC_CITY);
+  }
+
+  static Marker getUserLocationIcon(LatLng pointLoc) {
+    return Marker(point: pointLoc, child: MapConstants.SMILEY);
+  }
+
   static Widget getRouteDirectionIcon(String route, int direction) {
     String? directionString = GtfsService.provideDirection(route, direction);
     if (directionString == null) {

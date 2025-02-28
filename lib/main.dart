@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:busneighbor_flutter/service/constants/map-constants.dart';
 import 'package:busneighbor_flutter/service/map-component-service.dart';
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,6 @@ MapUpdaterService mapUpdaterService = MapUpdaterService();
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,7 +45,7 @@ class AppHome extends StatefulWidget {
 
 class _AppHomeState extends State<AppHome> {
   int _counter = 0;
-  LatLng userPosition = UserLocationService.CITY_HALL;
+  LatLng? userPosition;
 
   StreamSubscription? userLocationSubscription;
 
@@ -65,14 +65,14 @@ class _AppHomeState extends State<AppHome> {
     }
     print("Locations on!");
     var subscription = UserLocationService.registerForPositions(
-        updateUserPosition,
+        _updateUserPosition,
         onError: handleLocationError);
     setState(() {
       userLocationSubscription = subscription;
     });
   }
 
-  void updateUserPosition(Position position) {
+  void _updateUserPosition(Position position) {
     LatLng convertedToPosition = UserLocationService.positionToLatlng(position);
     print("Obtained updated position $convertedToPosition");
     setState(() {
@@ -87,18 +87,17 @@ class _AppHomeState extends State<AppHome> {
   Future<void> _updateMarkers() async {
     print("Updating markers...");
 
-    List<Marker> newMarkers =
-        await mapUpdaterService.getMapsForRoutes({"45", "47", "4", "29"});
+    List<Marker> newMarkers = [
+      ...await mapUpdaterService.getMapsForRoutes({"45", "47", "4", "29"}),
+      userPosition != null
+          ? MapMarkerService.getUserLocationIcon(userPosition!)
+          : MapMarkerService.getNoUserLocationIcon(MapConstants.CITY_HALL)
+    ];
     setState(() => _markers = newMarkers);
   }
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without callin setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }

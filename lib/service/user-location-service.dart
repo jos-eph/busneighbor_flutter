@@ -4,8 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class UserLocationService {
-  static LatLng CITY_HALL = LatLng(39.9528, -75.1635);
-
   static Future<bool> locationServicesEnabled() async {
     return await Geolocator
         .isLocationServiceEnabled(); // device-wide, not app permissions
@@ -48,12 +46,7 @@ class UserLocationService {
   static Future<LatLng> provideLocation() async {
     Position position;
 
-    try {
-      position = await _determinePosition();
-    } catch (e) {
-      return CITY_HALL;
-    }
-
+    position = await _determinePosition();
     return LatLng(position.latitude, position.longitude);
   }
 
