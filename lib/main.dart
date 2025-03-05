@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:busneighbor_flutter/service/constants/map-constants.dart';
 import 'package:busneighbor_flutter/service/map-component-service.dart';
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
-import 'package:busneighbor_flutter/service/ui/ui-selection-service.dart';
+import 'package:busneighbor_flutter/ui/material/route-selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(UiSelectionService.useCupertino());
     return MaterialApp(
       title: 'BusNeighbor Skeleton',
       theme: ThemeData(
@@ -130,7 +129,11 @@ class _AppHomeState extends State<AppHome> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: incrementAndUpdate,
+        onPressed: () {
+          incrementAndUpdate();
+          showModalBottomSheet(
+              context: context, builder: buildMaterialRouteSelector);
+        },
         tooltip: 'Increment/update',
         child: const Icon(Icons.add),
       ),
