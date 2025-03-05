@@ -107,7 +107,7 @@ class _AppHomeState extends State<AppHome> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext mainContext) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -122,7 +122,7 @@ class _AppHomeState extends State<AppHome> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(mainContext).textTheme.headlineMedium,
             ),
             MapComponentService.getMapBox(_markers)
           ],
@@ -132,7 +132,7 @@ class _AppHomeState extends State<AppHome> {
         onPressed: () {
           incrementAndUpdate();
           showModalBottomSheet(
-              context: context, builder: buildMaterialRouteSelector);
+              context: mainContext, builder: buildMaterialRouteSelector);
         },
         tooltip: 'Increment/update',
         child: const Icon(Icons.add),

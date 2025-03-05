@@ -11,6 +11,8 @@ Widget? _getRouteTile(BuildContext routeListContext, int index) {
 
   return ListTile(
     title: Text("${route}"),
+    selected: true,
+    selectedTileColor: Colors.deepPurple,
     onTap: () {
       // logic for route selection
       Navigator.pop(routeListContext);
@@ -28,8 +30,11 @@ Widget buildMaterialRouteSelector(BuildContext contextOfRouteSelector) {
                 labelText: "Search Routes", prefixIcon: Icon(Icons.search)),
           )),
       Expanded(
-          child: ListView.builder(
-              itemCount: POSSIBLE_ROUTES.length, itemBuilder: _getRouteTile))
+          child: ClipRect(
+              child: ListView.builder(
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: POSSIBLE_ROUTES.length,
+                  itemBuilder: _getRouteTile)))
     ],
   );
 }
