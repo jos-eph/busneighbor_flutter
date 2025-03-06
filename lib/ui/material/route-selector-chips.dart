@@ -2,16 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:busneighbor_flutter/service/constants/possible-routes.dart';
 
 class RouteFilterChips extends StatefulWidget {
-  const RouteFilterChips({super.key});
+  final void Function(Set<String>) onRoutesSelected;
+  final Set<String> routesSelectedAtCreation;
+
+  const RouteFilterChips(
+      {super.key,
+      required Set<String> this.routesSelectedAtCreation,
+      required this.onRoutesSelected});
 
   @override
   State<RouteFilterChips> createState() => _RouteFilterChipsState();
 }
 
 class _RouteFilterChipsState extends State<RouteFilterChips> {
-  Set<String> selectedRoutes = <String>{};
+  Set<String> selectedRoutes = {};
 
   Widget _getChips() {
+    setState(() {
+      if (selectedRoutes.isEmpty) {
+        selectedRoutes = Set.from(widget.routesSelectedAtCreation);
+      }
+    });
+    print("Selected routes inside selector: $selectedRoutes");
     return Wrap(
         spacing: 12.0,
         runSpacing: 8.0,
@@ -28,6 +40,7 @@ class _RouteFilterChipsState extends State<RouteFilterChips> {
                   } else {
                     selectedRoutes.remove(routeText);
                   }
+                  widget.onRoutesSelected(selectedRoutes);
                 });
               },
             );

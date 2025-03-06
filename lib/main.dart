@@ -45,6 +45,7 @@ class AppHome extends StatefulWidget {
 class _AppHomeState extends State<AppHome> {
   int _counter = 0;
   LatLng? userPosition;
+  Set<String> routesSelected = {"4", "29", "45"};
 
   StreamSubscription? userLocationSubscription;
 
@@ -87,7 +88,7 @@ class _AppHomeState extends State<AppHome> {
     print("Updating markers...");
 
     List<Marker> newMarkers = [
-      ...await mapUpdaterService.getMapsForRoutes({"45", "47", "4", "29"}),
+      ...await mapUpdaterService.getMapsForRoutes(routesSelected),
       userPosition != null
           ? MapMarkerService.getUserLocationIcon(userPosition!)
           : MapMarkerService.getNoUserLocationIcon(MapConstants.CITY_HALL)
@@ -104,6 +105,14 @@ class _AppHomeState extends State<AppHome> {
   void incrementAndUpdate() {
     _incrementCounter();
     _updateMarkers();
+  }
+
+  void selectionUpdate(Set<String> selectedRoutes) {
+    setState(() {
+      routesSelected = selectedRoutes;
+      _updateMarkers();
+    });
+    print(selectedRoutes);
   }
 
   @override
@@ -133,7 +142,10 @@ class _AppHomeState extends State<AppHome> {
           incrementAndUpdate();
           showModalBottomSheet(
               context: mainContext,
-              builder: (context) => const RouteFilterChips());
+              builder: (context) => RouteFilterChips(
+                    routesSelectedAtCreation: routesSelected,
+                    onRoutesSelected: selectionUpdate,
+                  ));
         },
         tooltip: 'Increment/update',
         child: const Icon(Icons.add),
