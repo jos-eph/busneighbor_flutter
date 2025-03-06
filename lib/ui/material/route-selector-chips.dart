@@ -45,12 +45,13 @@ class _RouteFilterChipsState extends State<RouteFilterChips> {
     final TextTheme textTheme = Theme.of(chipFilteringContext).textTheme;
 
     return Center(
-        child: Column(children: <Widget>[
+        child: SingleChildScrollView(
+            child: Column(children: <Widget>[
       Text("Choose your routes for display", style: textTheme.labelLarge),
       const SizedBox(height: 15.0),
       _getChips(),
       const SizedBox(height: 15.0),
       _getSelectedSummary(textTheme)
-    ]));
+    ])));
   }
 }
