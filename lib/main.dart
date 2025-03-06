@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:busneighbor_flutter/service/constants/map-constants.dart';
 import 'package:busneighbor_flutter/service/map-component-service.dart';
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
-import 'package:busneighbor_flutter/ui/material/route-selector.dart';
+import 'package:busneighbor_flutter/ui/material/route-selector-chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -132,7 +132,8 @@ class _AppHomeState extends State<AppHome> {
         onPressed: () {
           incrementAndUpdate();
           showModalBottomSheet(
-              context: mainContext, builder: buildMaterialRouteSelector);
+              context: mainContext,
+              builder: (context) => const RouteFilterChips());
         },
         tooltip: 'Increment/update',
         child: const Icon(Icons.add),
