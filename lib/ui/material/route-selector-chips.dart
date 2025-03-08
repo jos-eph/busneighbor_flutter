@@ -16,13 +16,17 @@ class RouteFilterChips extends StatefulWidget {
 
 class _RouteFilterChipsState extends State<RouteFilterChips> {
   Set<String> selectedRoutes = {};
+  bool initialRun = true;
 
   Widget _getChips() {
-    setState(() {
-      if (selectedRoutes.isEmpty) {
+    if (initialRun) {
+      setState(() {
         selectedRoutes = Set.from(widget.routesSelectedAtCreation);
-      }
-    });
+        initialRun = false;
+      });
+    }
+
+    assert(selectedRoutes != null);
     print("Selected routes inside selector: $selectedRoutes");
     return Wrap(
         spacing: 12.0,
