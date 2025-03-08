@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:busneighbor_flutter/model/gtfsLocations.dart';
 import 'package:busneighbor_flutter/service/map-marker-service.dart';
 import 'package:busneighbor_flutter/service/gtfs-service.dart';
@@ -25,6 +26,9 @@ class MapUpdaterService {
 
   Future<List<Marker>> getMapsForRoutes(Set<String> routeIds) async {
     GtfsLocations locations = await GtfsService.provideLocationsMap();
+    var keys = locations.locationsMap.keys.toList();
+    var keyString = jsonEncode(keys);
+    print(keyString);
     return getMapsForRoutesSync(routeIds, locations);
   }
 }
