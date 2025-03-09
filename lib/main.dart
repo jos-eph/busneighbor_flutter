@@ -11,12 +11,14 @@ import 'package:latlong2/latlong.dart';
 import 'package:busneighbor_flutter/service/map-marker-service.dart';
 import 'package:busneighbor_flutter/service/user-location-service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 MapUpdaterService mapUpdaterService = MapUpdaterService();
+const SELECTED_ROUTES = "selectedRoutes"; // retrieve and use data
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -45,6 +47,7 @@ class AppHome extends StatefulWidget {
 class _AppHomeState extends State<AppHome> {
   int _counter = 0;
   LatLng? userPosition;
+  late SharedPreferences prefs;
   Set<String> routesSelected = {"4", "29", "45"};
 
   StreamSubscription? userLocationSubscription;
@@ -64,17 +67,21 @@ class _AppHomeState extends State<AppHome> {
       return;
     }
     print("Locations on!");
-    var subscription = UserLocationService.registerForPositions(
+    var locationSubscription = UserLocationService.registerForPositions(
         _updateUserPosition,
         onError: handleLocationError);
+
+    var prefsObject = await SharedPreferences.getInstance();
     setState(() {
-      userLocationSubscription = subscription;
+      userLocationSubscription = locationSubscription;
+      prefs = prefsObject;
     });
   }
 
   void _updateUserPosition(Position position) {
     LatLng convertedToPosition = UserLocationService.positionToLatlng(position);
     print("Obtained updated position $convertedToPosition");
+
     setState(() {
       userPosition = convertedToPosition;
     });
