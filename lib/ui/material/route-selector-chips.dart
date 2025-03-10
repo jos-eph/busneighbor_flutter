@@ -52,11 +52,6 @@ class _RouteFilterChipsState extends State<RouteFilterChips> {
         ]);
   }
 
-  Widget _getSelectedSummary(TextTheme theme) {
-    return Text('Selected: routes ${selectedRoutes.toList().join(', ')}',
-        style: theme.labelLarge);
-  }
-
   @override
   Widget build(BuildContext chipFilteringContext) {
     final TextTheme textTheme = Theme.of(chipFilteringContext).textTheme;
@@ -72,8 +67,7 @@ class _RouteFilterChipsState extends State<RouteFilterChips> {
                           style: textTheme.labelLarge),
                       const SizedBox(height: 15.0),
                       _getChips(),
-                      const SizedBox(height: 15.0),
-                      _getSelectedSummary(textTheme)
+                      const SizedBox(height: 15.0)
                     ])))));
   }
 }
