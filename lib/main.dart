@@ -18,8 +18,9 @@ void main() {
 }
 
 MapUpdaterService mapUpdaterService = MapUpdaterService();
-const SELECTED_ROUTES = "selectedRoutes"; // retrieve and use data
+const SELECTED_ROUTES_NAME = "selectedRoutes"; // retrieve and use data
 const DEFAULT_ROUTES = {"4", "29", "45"};
+const REFRESH_EVERY_SECS = 8;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -49,6 +50,7 @@ class _AppHomeState extends State<AppHome> {
   int _counter = 0;
   LatLng? userPosition;
   late SharedPreferences prefs;
+  late Timer _timer;
   Set<String> routesSelected = {"4", "29", "45"};
 
   StreamSubscription? userLocationSubscription;
@@ -81,10 +83,9 @@ class _AppHomeState extends State<AppHome> {
   Future<void> _selfInit() async {
     bool locationsOn = await UserLocationService.ensureLocationPermission();
     if (!locationsOn) {
-      print("Locations off.");
-      return;
+      showError("User locations are off; using default");
     }
-    print("Locations on!");
+
     var locationSubscription = UserLocationService.registerForPositions(
         _updateUserPosition,
         onError: handleLocationError);
@@ -102,10 +103,15 @@ class _AppHomeState extends State<AppHome> {
         routesSelected = storedRoutes;
       }
     });
+
+    _updateMarkers();
+    _timer = Timer.periodic(Duration(seconds: REFRESH_EVERY_SECS), (timer) {
+      _updateMarkers();
+    });
   }
 
   void savePreferredRoutes() async {
-    await prefs.setStringList(SELECTED_ROUTES, routesSelected.toList());
+    await prefs.setStringList(SELECTED_ROUTES_NAME, routesSelected.toList());
     print("Preferences saved - $routesSelected");
   }
 
@@ -113,7 +119,7 @@ class _AppHomeState extends State<AppHome> {
     List<String>? storedRoutes;
 
     try {
-      storedRoutes = prefs.getStringList(SELECTED_ROUTES);
+      storedRoutes = prefs.getStringList(SELECTED_ROUTES_NAME);
     } catch (ex) {
       showError("Exception for storedRoutes: $ex");
       return {};
@@ -154,17 +160,6 @@ class _AppHomeState extends State<AppHome> {
     setState(() => _markers = newMarkers);
   }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void incrementAndUpdate() {
-    _incrementCounter();
-    _updateMarkers();
-  }
-
   void selectionUpdate(Set<String> selectedRoutes) {
     setState(() {
       routesSelected = selectedRoutes;
@@ -184,21 +179,11 @@ class _AppHomeState extends State<AppHome> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(mainContext).textTheme.headlineMedium,
-            ),
-            MapComponentService.getMapBox(_markers)
-          ],
+          children: <Widget>[MapComponentService.getMapBox(_markers)],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          incrementAndUpdate();
           showModalBottomSheet(
               context: mainContext,
               builder: (context) => RouteFilterChips(
@@ -206,8 +191,8 @@ class _AppHomeState extends State<AppHome> {
                     onRoutesSelected: selectionUpdate,
                   ));
         },
-        tooltip: 'Increment/update',
-        child: const Icon(Icons.add),
+        tooltip: 'Settings',
+        child: const Icon(Icons.settings),
       ),
     );
   }
