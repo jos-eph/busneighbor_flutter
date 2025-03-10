@@ -11,12 +11,15 @@ import 'package:latlong2/latlong.dart';
 import 'package:busneighbor_flutter/service/map-marker-service.dart';
 import 'package:busneighbor_flutter/service/user-location-service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 MapUpdaterService mapUpdaterService = MapUpdaterService();
+const SELECTED_ROUTES = "selectedRoutes"; // retrieve and use data
+const DEFAULT_ROUTES = {"4", "29", "45"};
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -45,6 +48,7 @@ class AppHome extends StatefulWidget {
 class _AppHomeState extends State<AppHome> {
   int _counter = 0;
   LatLng? userPosition;
+  late SharedPreferences prefs;
   Set<String> routesSelected = {"4", "29", "45"};
 
   StreamSubscription? userLocationSubscription;
@@ -57,6 +61,23 @@ class _AppHomeState extends State<AppHome> {
     _selfInit();
   }
 
+  void showError(String errorText) {
+    showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+              title: Text("Error"),
+              content: Text(errorText),
+              actions: <Widget>[
+                TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    })
+              ]);
+        });
+  }
+
   Future<void> _selfInit() async {
     bool locationsOn = await UserLocationService.ensureLocationPermission();
     if (!locationsOn) {
@@ -64,24 +85,61 @@ class _AppHomeState extends State<AppHome> {
       return;
     }
     print("Locations on!");
-    var subscription = UserLocationService.registerForPositions(
+    var locationSubscription = UserLocationService.registerForPositions(
         _updateUserPosition,
         onError: handleLocationError);
+
+    var prefsObject = await SharedPreferences.getInstance();
     setState(() {
-      userLocationSubscription = subscription;
+      userLocationSubscription = locationSubscription;
+      prefs = prefsObject;
     });
+
+    Set<String> storedRoutes = retrieveSavedRoutes();
+
+    setState(() {
+      if (storedRoutes.isNotEmpty) {
+        routesSelected = storedRoutes;
+      }
+    });
+  }
+
+  void savePreferredRoutes() async {
+    await prefs.setStringList(SELECTED_ROUTES, routesSelected.toList());
+    print("Preferences saved - $routesSelected");
+  }
+
+  Set<String> retrieveSavedRoutes() {
+    List<String>? storedRoutes;
+
+    try {
+      storedRoutes = prefs.getStringList(SELECTED_ROUTES);
+    } catch (ex) {
+      showError("Exception for storedRoutes: $ex");
+      return {};
+    }
+
+    if (storedRoutes == null) {
+      print("storedRoutes null");
+      return {};
+    }
+
+    print("Stored routes retrieved as $storedRoutes");
+
+    return Set.from(storedRoutes);
   }
 
   void _updateUserPosition(Position position) {
     LatLng convertedToPosition = UserLocationService.positionToLatlng(position);
     print("Obtained updated position $convertedToPosition");
+
     setState(() {
       userPosition = convertedToPosition;
     });
   }
 
   void handleLocationError(Object error, StackTrace stacktrace) {
-    print("Error obtaining user location: $error. Stacktrace: $stacktrace");
+    showError("Error obtaining user location: $error. Stacktrace: $stacktrace");
   }
 
   Future<void> _updateMarkers() async {
@@ -112,6 +170,7 @@ class _AppHomeState extends State<AppHome> {
       routesSelected = selectedRoutes;
       _updateMarkers();
     });
+    savePreferredRoutes();
     print(selectedRoutes);
   }
 

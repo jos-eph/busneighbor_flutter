@@ -26,9 +26,6 @@ class MapUpdaterService {
 
   Future<List<Marker>> getMapsForRoutes(Set<String> routeIds) async {
     GtfsLocations locations = await GtfsService.provideLocationsMap();
-    var keys = locations.locationsMap.keys.toList();
-    var keyString = jsonEncode(keys);
-    print(keyString);
     return getMapsForRoutesSync(routeIds, locations);
   }
 }
