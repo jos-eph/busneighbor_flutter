@@ -105,8 +105,8 @@ class _AppHomeState extends State<AppHome> {
   }
 
   void savePreferredRoutes() async {
-    await prefs!.setStringList(SELECTED_ROUTES, routesSelected.toList());
-    print("Preferences $routesSelected saved");
+    await prefs.setStringList(SELECTED_ROUTES, routesSelected.toList());
+    print("Preferences saved - $routesSelected");
   }
 
   Set<String> retrieveSavedRoutes() {
