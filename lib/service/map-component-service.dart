@@ -15,21 +15,23 @@ class MapComponentService {
       "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
   static const String PACKAGE_NAME = "org.dydx.busneighbor";
 
-  static Widget getMapBox(List<Marker> markers) {
-    return SizedBox(
-      height: 500,
-      width: 500,
-      child: FlutterMap(
-          options: MapOptions(
-              initialZoom: 14, initialCenter: LatLng(39.9522, -75.1637)),
-          children: [
-            TileLayer(
-                urlTemplate: OSM_TILE_TEMPLATE,
-                userAgentPackageName: PACKAGE_NAME),
-            MarkerLayer(
-              markers: markers,
-            ),
-            RichAttributionWidget(
+  static Widget getMapBox(List<Marker> markers, {BoxConstraints? constraints}) {
+    return FlutterMap(
+        options: MapOptions(
+            initialZoom: 14, initialCenter: LatLng(39.9522, -75.1637)),
+        children: [
+          TileLayer(
+              urlTemplate: OSM_TILE_TEMPLATE,
+              userAgentPackageName: PACKAGE_NAME),
+          MarkerLayer(
+            markers: markers,
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: RichAttributionWidget(
+              alignment: AttributionAlignment.bottomLeft,
+              permanentHeight: 19,
+              showFlutterMapAttribution: false,
               attributions: [
                 TextSourceAttribution(
                   'OpenStreetMap contributors',
@@ -38,7 +40,7 @@ class MapComponentService {
                 ),
               ],
             ),
-          ]),
-    );
+          ),
+        ]);
   }
 }

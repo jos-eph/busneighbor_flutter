@@ -176,12 +176,7 @@ class _AppHomeState extends State<AppHome> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[MapComponentService.getMapBox(_markers)],
-        ),
-      ),
+      body: MapComponentService.getMapBox(_markers),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
