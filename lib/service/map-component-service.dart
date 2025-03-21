@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:busneighbor_flutter/service/map-updater-service.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,11 @@ class MapComponentService {
   static Widget getMapBox(List<Marker> markers, {BoxConstraints? constraints}) {
     return FlutterMap(
         options: MapOptions(
-            initialZoom: 14, initialCenter: LatLng(39.9522, -75.1637)),
+            initialZoom: 14,
+            initialCenter: LatLng(39.9522, -75.1637),
+            interactionOptions: InteractionOptions(
+                flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                pinchMoveWinGestures: MultiFingerGesture.none)),
         children: [
           TileLayer(
               urlTemplate: OSM_TILE_TEMPLATE,

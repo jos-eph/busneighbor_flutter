@@ -61,7 +61,7 @@ class _RouteFilterChipsState extends State<RouteFilterChips> {
             padding: EdgeInsets.all(10.0),
             child: SingleChildScrollView(
                 child: Padding(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.fromLTRB(25, 2, 25, 0),
                     child: Column(children: <Widget>[
                       Text("Choose your routes for display",
                           style: textTheme.labelLarge),
